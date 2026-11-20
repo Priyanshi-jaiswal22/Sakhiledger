@@ -3,3 +3,34 @@
 @media(max-width:1050px){.sidebar{width:205px;padding-inline:15px}.workspace{margin-left:205px}.content{padding:0 25px}.topbar{padding:0 25px}.dashboard-grid{grid-template-columns:1fr}.lower-grid{grid-template-columns:1fr}.hero-art{right:0}}
 @media(max-width:700px){.sidebar{position:relative;width:auto;height:auto;padding:13px 17px;display:block}.brand{padding:0}.brand-mark{height:36px;width:36px}.side-label,.side-nav,.sidebar-spacer,.sidebar-note,.side-footer{display:none}.workspace{margin-left:0}.topbar{height:55px;padding:0 17px}.today-label{display:none}.top-actions{gap:9px}.content{padding:0 15px}.hero{min-height:200px;padding:25px 23px;margin:17px 0 22px}.hero-art{right:-83px;opacity:.7}.hero h1{font-size:27px;max-width:260px}.hero-copy>p{max-width:245px;line-height:1.5}.section-heading h2{font-size:16px}.metrics{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.metric-card{padding:13px}.metric-card strong{font-size:22px}.dashboard-grid,.lower-grid{gap:10px;margin-top:11px}.panel{padding:16px}.panel-heading h2{font-size:15px}.trend-chart{height:135px}.bar-pair{height:100px}.records-panel{overflow:hidden}.records-footer{align-items:flex-start;flex-direction:column;gap:2px}footer{flex-direction:column;padding-bottom:20px}footer em{display:block;margin:4px 0 0}.live-chip{font-size:7px}}
 @media(max-width:370px){.content{padding:0 11px}.hero{padding:21px 17px}.hero h1{font-size:24px}.metric-card strong{font-size:19px}.form-row{gap:7px}.field-date{width:46%}.language-picker select{padding:7px 6px;font-size:9px}}
+
+/* Final polish: clearer hierarchy, more breathing room, mobile-first interaction */
+.hero{background:linear-gradient(115deg,#e5eee4 0%,#edf1e8 55%,#f4ead9 100%);border:1px solid #dfe8dc}
+.hero-kicker{letter-spacing:1.35px}
+.hero h1{max-width:540px;line-height:1.15}
+.metric-card{transition:transform .18s ease,box-shadow .18s ease}
+.metric-card:hover{transform:translateY(-2px);box-shadow:0 15px 32px rgba(39,53,42,.07)}
+.panel{box-shadow:0 5px 22px rgba(39,53,42,.035)}
+.entry-panel{border-color:#d8e4d8;background:linear-gradient(180deg,#fffefa,#fbfcf8)}
+.submit-button{min-height:46px;font-size:12px}
+.mic-button{min-height:42px;width:46px;font-size:18px}
+.entry-panel input,.entry-panel form select{min-height:42px;font-size:12px}
+.nav-link{font-size:13px}
+.delete-row{width:32px;height:32px;border-radius:7px}
+.delete-row:hover{background:#faeee9}
+@media(max-width:700px){
+  .sidebar{background:#214b3b;padding:15px 18px;box-shadow:0 3px 14px rgba(23,49,36,.08)}
+  .brand-copy strong{font-size:18px}
+  .brand-copy small{font-size:8px;letter-spacing:1.35px}
+  .hero{border-radius:17px;min-height:218px;box-shadow:0 7px 24px rgba(39,53,42,.035)}
+  .hero h1{line-height:1.16}
+  .hero-audio{padding:10px 14px;font-size:11px}
+  .metrics{gap:10px}
+  .metric-card{border-radius:13px;min-height:128px}
+  .metric-card strong{margin:12px 0 5px}
+  .panel{border-radius:13px}
+  .lower-grid{display:flex;flex-direction:column}
+  .entry-panel{order:0}
+  .records-panel{order:1}
+  .submit-button{position:relative}
+}
