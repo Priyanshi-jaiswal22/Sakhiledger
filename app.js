@@ -46,6 +46,30 @@
     Object.entries(vars).forEach(([k,v])=>{value=value.replace("{"+k+"}",String(v));});
     p.textContent=value; div.append(symbol,p); $("insightsList").append(div);
   }
+  function renderTrend() {
+    const host=$("trendChart"); if(!host) return;
+    host.replaceChildren();
+    const days=[];
+    for(let i=6;i>=0;i--){
+      const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-i);
+      const key=[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
+      const dayEntries=entries.filter(e=>e.date===key);
+      const sales=dayEntries.filter(e=>e.type==="sale"||e.type==="udhaar").reduce((s,e)=>s+Number(e.amount),0);
+      const expenses=dayEntries.filter(e=>e.type==="expense").reduce((s,e)=>s+Number(e.amount),0);
+      days.push({date:d,sales,expenses});
+    }
+    const max=Math.max(1,...days.flatMap(d=>[d.sales,d.expenses]));
+    if(!entries.length){const empty=document.createElement("div");empty.className="chart-empty";empty.textContent="Add entries to see your business rhythm.";host.append(empty);return;}
+    days.forEach(day=>{
+      const col=document.createElement("div");col.className="chart-day";
+      const pair=document.createElement("div");pair.className="bar-pair";
+      [["sales",day.sales],["expenses",day.expenses]].forEach(([kind,value])=>{
+        const bar=document.createElement("div");bar.className="bar "+kind;bar.style.height=(value?Math.max(5,(value/max)*100):3)+"%";bar.title=(kind==="sales"?"Sales: ":"Expenses: ")+money(value);pair.append(bar);
+      });
+      const label=document.createElement("small");label.textContent=day.date.toLocaleDateString(language==="en"?"en-IN":language==="hi"?"hi-IN":"gu-IN",{weekday:"short"});
+      col.append(pair,label);host.append(col);
+    });
+  }
   function render() {
     const x=totals();
     $("salesTotal").textContent=money(x.sales); $("expensesTotal").textContent=money(x.expenses);
@@ -64,6 +88,7 @@
         tr.append(date,type,detail,amount,action);body.append(tr);
       });
     }
+    renderTrend();
     const insights=$("insightsList");insights.replaceChildren();
     if(!entries.length) {
       const empty=document.createElement("div");empty.className="empty-insight";const icon=document.createElement("span");icon.textContent="🌱";const p=document.createElement("p");p.textContent=t("emptyInsight");empty.append(icon,p);insights.append(empty);
@@ -75,6 +100,7 @@
     }
   }
   $("entryDate").value=dateToday();
+  const todayNode=$("todayLabel"); if(todayNode) todayNode.textContent=new Date().toLocaleDateString(language==="en"?"en-IN":language==="hi"?"hi-IN":"gu-IN",{weekday:"short",day:"numeric",month:"short",year:"numeric"});
   $("languageSelect").value=language;
   $("languageSelect").addEventListener("change",e=>{language=e.target.value;localStorage.setItem("sakhiledger.language",language);applyLanguage();});
   $("entryForm").addEventListener("submit",e=>{
