@@ -91,7 +91,7 @@
   $("loadDemo").addEventListener("click",()=>{
     if(entries.some(e=>e.demo)){ $("formMessage").textContent=t("demoLoaded");return; }
     const today=dateToday();
-    const day=(n)=>{const d=new Date(today+"T00:00:00");d.setDate(d.getDate()-n);return d.toISOString().slice(0,10);};
+    const day=(n)=>{const d=new Date(today+"T00:00:00");d.setDate(d.getDate()-n);const y=d.getFullYear();const m=String(d.getMonth()+1).padStart(2,"0");const dayOfMonth=String(d.getDate()).padStart(2,"0");return y+"-"+m+"-"+dayOfMonth;};
     const samples=[
       {type:"sale",amount:1800,date:day(0),person:"Walk-in customers",note:"Clothing sales"},
       {type:"expense",amount:650,date:day(0),person:"",note:"Fabric purchase"},
