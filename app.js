@@ -70,6 +70,14 @@
       col.append(pair,label);host.append(col);
     });
   }
+  function renderCustomerDues() {
+    const host=$("customerDuesList"); if(!host) return; host.replaceChildren();
+    const customers={};
+    entries.filter(e=>e.type==="udhaar"||e.type==="repayment").forEach(e=>{const name=(e.person||"").trim();if(!name)return;if(!customers[name])customers[name]={owed:0,paid:0};if(e.type==="udhaar")customers[name].owed+=Number(e.amount);if(e.type==="repayment")customers[name].paid+=Number(e.amount);});
+    const list=Object.entries(customers).map(([name,v])=>({name,amount:Math.max(0,v.owed-v.paid)})).filter(x=>x.amount>0).sort((a,b)=>b.amount-a.amount);
+    if(!list.length){const p=document.createElement("p");p.className="dues-empty";p.textContent="No named customer dues yet. Add a credit sale with the customer's name.";host.append(p);return;}
+    list.forEach(item=>{const row=document.createElement("div");row.className="customer-due-row";const info=document.createElement("div");info.className="customer-due-info";const name=document.createElement("strong");name.textContent=item.name;const amount=document.createElement("span");amount.textContent=money(item.amount)+" outstanding";info.append(name,amount);const btn=document.createElement("a");btn.className="reminder-button";btn.textContent="WhatsApp reminder";const msg=language==="hi"?item.name+" जी, आपके "+Math.round(item.amount)+" रुपये बाकी हैं। जब सुविधाजनक हो, कृपया भुगतान कर दें। धन्यवाद!":language==="gu"?item.name+", તમારા "+Math.round(item.amount)+" રૂપિયા બાકી છે. અનુકૂળ હોય ત્યારે કૃપા કરીને ચુકવણી કરશો. આભાર!":"Hi "+item.name+", ₹"+Math.round(item.amount)+" is still pending. Please pay when convenient. Thank you!";btn.href="https://wa.me/?text="+encodeURIComponent(msg);btn.target="_blank";btn.rel="noopener";row.append(info,btn);host.append(row);});
+  }
   function render() {
     const x=totals();
     $("salesTotal").textContent=money(x.sales); $("expensesTotal").textContent=money(x.expenses);
@@ -127,6 +135,7 @@
     samples.forEach((s,i)=>entries.push({...s,id:"demo-"+Date.now()+"-"+i,createdAt:Date.now()+i,demo:true}));
     save();render();$("formMessage").textContent=t("demoLoaded");
   });
+  $("priceCheckBtn").addEventListener("click",()=>{const cost=Number($("priceCost").value),sell=Number($("priceSell").value),out=$("priceCheckResult");if($("priceCost").value===""||$("priceSell").value===""||cost<0||sell<=0){out.textContent="Enter a cost and selling price greater than zero.";return;}const diff=sell-cost,margin=(diff/sell)*100;out.textContent=diff>0?"You have ₹"+diff.toFixed(2)+" left per item before other expenses ("+margin.toFixed(1)+"% gross margin).":diff===0?"Your selling price only covers the listed cost. No room for other expenses.":"Your price is ₹"+Math.abs(diff).toFixed(2)+" below cost. You are losing money before other expenses.";});
   $("speakSummary").addEventListener("click",()=>{
     if(!("speechSynthesis" in window)){ $("formMessage").textContent="Speech playback is not supported in this browser.";return; }
     const x=totals();let message=entries.length?t("summaryText").replace("{sales}",Math.round(x.sales)).replace("{expenses}",Math.round(x.expenses)).replace("{net}",Math.round(x.net)).replace("{dues}",Math.round(x.dues)):t("summaryEmpty");
